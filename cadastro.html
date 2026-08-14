@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Escolar - Cadastro</title>
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <div class="logo">
+            <h1>Sistema Escolar</h1>
+            <p>Crie sua conta</p>
+        </div>
+
+        <div id="mensagem"></div>
+
+        <form id="cadastroForm">
+
+            <div class="campo">
+                <label for="email">E-mail</label>
+                <input type="text" id="email" placeholder="exemplo@escola.com">
+            </div>
+
+            <div class="campo">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" placeholder="Digite sua senha">
+            </div>
+
+            <div class="campo">
+                <label for="confirmarSenha">Confirmar senha</label>
+                <input type="password" id="confirmarSenha" placeholder="Digite sua senha novamente">
+            </div>
+
+            <button type="submit">Cadastrar</button>
+
+        </form>
+
+        <div class="cadastro">
+            Já possui uma conta?
+            <a href="login.html">Entrar</a>
+        </div>
+
+    </div>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #1e3a8a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background: white;
+            width: 380px;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo h1 {
+            color: #1e3a8a;
+            font-size: 28px;
+        }
+
+        .logo p {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .campo {
+            margin-bottom: 18px;
+        }
+
+        .campo label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .campo input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .campo input:focus {
+            border-color: #1e3a8a;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 7px;
+            background: #1e3a8a;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #162d6b;
+        }
+
+        #mensagem {
+            display: none;
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 7px;
+            font-size: 14px;
+        }
+
+        #mensagem.erro {
+            display: block;
+            background: #ffe5e5;
+            color: #b00020;
+            border: 1px solid #ffb3b3;
+        }
+
+        #mensagem.sucesso {
+            display: block;
+            background: #e5ffe9;
+            color: #08752c;
+            border: 1px solid #9ee6ae;
+        }
+
+        .cadastro {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .cadastro a {
+            color: #1e3a8a;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .cadastro a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 450px) {
+            body {
+                padding: 20px;
+            }
+
+            .login-container {
+                width: 100%;
+                padding: 25px;
+            }
+        }
+    </style>
+
+    <script>
+        const form = document.getElementById("cadastroForm");
+        const emailInput = document.getElementById("email");
+        const senhaInput = document.getElementById("senha");
+        const confirmarSenhaInput = document.getElementById("confirmarSenha");
+        const mensagem = document.getElementById("mensagem");
+
+        function mostrarMensagem(texto, tipo) {
+            mensagem.textContent = texto;
+            mensagem.className = tipo;
+        }
+
+        function emailValido(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const email = emailInput.value.trim();
+            const senha = senhaInput.value.trim();
+            const confirmarSenha = confirmarSenhaInput.value.trim();
+
+            if (email === "" || senha === "" || confirmarSenha === "") {
+                mostrarMensagem(
+                    "Erro: preencha todos os campos antes de cadastrar.",
+                    "erro"
+                );
+                return;
+            }
+
+            if (!email.includes("@")) {
+                mostrarMensagem(
+                    "Erro: digite um endereço de e-mail válido. Exemplo: aluno@escola.com.",
+                    "erro"
+                );
+                return;
+            }
+
+            if (!emailValido(email)) {
+                mostrarMensagem(
+                    "Erro: o formato do e-mail está incorreto.",
+                    "erro"
+                );
+                return;
+            }
+
+            if (senha.length < 6) {
+                mostrarMensagem(
+                    "Erro: a senha precisa possuir pelo menos 6 caracteres.",
+                    "erro"
+                );
+                return;
+            }
+
+            if (senha !== confirmarSenha) {
+                mostrarMensagem(
+                    "Erro: as senhas não são iguais.",
+                    "erro"
+                );
+                return;
+            }
+
+            let usuarios = JSON.parse(
+                localStorage.getItem("usuarios")
+            ) || [];
+
+            const usuarioExistente = usuarios.find(function(usuario) {
+                return usuario.email.toLowerCase() === email.toLowerCase();
+            });
+
+            if (usuarioExistente) {
+                mostrarMensagem(
+                    "Erro: este e-mail já está cadastrado.",
+                    "erro"
+                );
+                return;
+            }
+
+            const novoUsuario = {
+                email: email,
+                senha: senha
+            };
+
+            usuarios.push(novoUsuario);
+
+            localStorage.setItem(
+                "usuarios",
+                JSON.stringify(usuarios)
+            );
+
+            mostrarMensagem(
+                "Cadastro realizado com sucesso! Redirecionando para o login...",
+                "sucesso"
+            );
+
+            setTimeout(function() {
+                window.location.href = "login.html";
+            }, 1500);
+        });
+    </script>
+
+</body>
+
+</html>

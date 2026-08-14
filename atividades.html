@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Escolar - Atividades</title>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+            <div>
+                <span class="tag">ÁREA DO ALUNO</span>
+                <h1>Minhas Atividades</h1>
+                <p>Organize suas tarefas e acompanhe o que ainda precisa fazer.</p>
+            </div>
+
+            <div class="contador">
+                <strong id="contador">0</strong>
+                <span>pendentes</span>
+            </div>
+        </header>
+
+        <div class="filtros">
+            <button class="filtro ativo" onclick="filtrar('todas', this)">Todas</button>
+            <button class="filtro" onclick="filtrar('Matemática', this)">Matemática</button>
+            <button class="filtro" onclick="filtrar('Português', this)">Português</button>
+        </div>
+
+        <div id="atividades" class="atividades"></div>
+
+        <div id="mensagem"></div>
+
+        <a href="inicio.html" class="voltar">← Voltar para o início</a>
+
+    </div>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #eef2ff;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            width: 850px;
+            max-width: 100%;
+            margin: auto;
+        }
+
+        header {
+            background: #1e3a8a;
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .tag {
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            opacity: 0.8;
+        }
+
+        header h1 {
+            font-size: 30px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            opacity: 0.85;
+            font-size: 14px;
+        }
+
+        .contador {
+            background: white;
+            color: #1e3a8a;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .contador strong {
+            font-size: 27px;
+        }
+
+        .contador span {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .filtros {
+            background: white;
+            padding: 12px;
+            border-radius: 10px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .filtro {
+            border: none;
+            background: transparent;
+            color: #555;
+            padding: 9px 15px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .filtro:hover {
+            background: #f1f5f9;
+        }
+
+        .filtro.ativo {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        .atividades {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .atividade {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            transition: 0.2s;
+        }
+
+        .atividade:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .atividade.concluida {
+            opacity: 0.65;
+        }
+
+        .atividade.concluida h2 {
+            text-decoration: line-through;
+        }
+
+        .materia {
+            display: inline-block;
+            padding: 5px 9px;
+            background: #e0e7ff;
+            color: #1e3a8a;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 14px;
+        }
+
+        .atividade h2 {
+            font-size: 19px;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+        .descricao {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.5;
+            min-height: 40px;
+        }
+
+        .entrega {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .data {
+            color: #777;
+            font-size: 12px;
+        }
+
+        .botao {
+            border: none;
+            padding: 9px 12px;
+            border-radius: 6px;
+            background: #1e3a8a;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .botao:hover {
+            background: #162d6b;
+        }
+
+        .atividade.concluida .botao {
+            background: #15803d;
+        }
+
+        #mensagem {
+            display: none;
+            margin-top: 20px;
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #15803d;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .voltar {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: #1e3a8a;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .voltar:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 650px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .contador {
+                width: 70px;
+                height: 70px;
+            }
+
+            .contador strong {
+                font-size: 22px;
+            }
+
+            .atividades {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <script>
+        const atividades = [
+            {
+                id: 1,
+                materia: "Matemática",
+                titulo: "Lista de exercícios",
+                descricao: "Resolver os exercícios das páginas 25 até 28.",
+                entrega: "20/08/2026"
+            },
+            {
+                id: 2,
+                materia: "Português",
+                titulo: "Produção de texto",
+                descricao: "Escrever um texto sobre a importância da educação.",
+                entrega: "22/08/2026"
+            },
+            {
+                id: 3,
+                materia: "Matemática",
+                titulo: "Revisão para a prova",
+                descricao: "Resolver a lista de revisão disponibilizada pelo professor.",
+                entrega: "30/08/2026"
+            },
+            {
+                id: 4,
+                materia: "Português",
+                titulo: "Leitura do livro",
+                descricao: "Ler os capítulos 1 a 5 do livro indicado.",
+                entrega: "02/09/2026"
+            }
+        ];
+
+        let concluidas = JSON.parse(
+            localStorage.getItem("atividadesConcluidas")
+        ) || [];
+
+        const container = document.getElementById("atividades");
+        const contador = document.getElementById("contador");
+        const mensagem = document.getElementById("mensagem");
+
+        function mostrarAtividades(filtro = "todas") {
+            container.innerHTML = "";
+
+            const lista = atividades.filter(function(atividade) {
+                if (filtro === "todas") {
+                    return true;
+                }
+
+                return atividade.materia === filtro;
+            });
+
+            lista.forEach(function(atividade) {
+                const concluida = concluidas.includes(atividade.id);
+                const card = document.createElement("div");
+
+                card.className = "atividade";
+
+                if (concluida) {
+                    card.classList.add("concluida");
+                }
+
+                card.innerHTML = `
+                    <span class="materia">${atividade.materia}</span>
+
+                    <h2>${atividade.titulo}</h2>
+
+                    <p class="descricao">${atividade.descricao}</p>
+
+                    <div class="entrega">
+                        <span class="data">Entrega: ${atividade.entrega}</span>
+
+                        <button class="botao" onclick="alternarAtividade(${atividade.id})">
+                            ${concluida ? "✓ Concluída" : "Marcar como feita"}
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+
+            atualizarContador();
+        }
+
+        function alternarAtividade(id) {
+            if (concluidas.includes(id)) {
+                concluidas = concluidas.filter(function(item) {
+                    return item !== id;
+                });
+
+                mostrarMensagem("Atividade marcada como pendente.");
+            } else {
+                concluidas.push(id);
+                mostrarMensagem("Atividade concluída com sucesso!");
+            }
+
+            localStorage.setItem(
+                "atividadesConcluidas",
+                JSON.stringify(concluidas)
+            );
+
+            mostrarAtividades();
+        }
+
+        function filtrar(materia, botao) {
+            document.querySelectorAll(".filtro").forEach(function(item) {
+                item.classList.remove("ativo");
+            });
+
+            botao.classList.add("ativo");
+            mostrarAtividades(materia);
+        }
+
+        function atualizarContador() {
+            const pendentes = atividades.length - concluidas.length;
+            contador.textContent = pendentes;
+        }
+
+        function mostrarMensagem(texto) {
+            mensagem.textContent = texto;
+            mensagem.style.display = "block";
+
+            setTimeout(function() {
+                mensagem.style.display = "none";
+            }, 2000);
+        }
+
+        mostrarAtividades();
+    </script>
+
+</body>
+</html>

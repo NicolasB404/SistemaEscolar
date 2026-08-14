@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Escolar - Minha Presença</title>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="topo">
+            <h1>Minha Presença</h1>
+            <p>Registre sua presença nos dias letivos de 2026</p>
+        </div>
+
+        <div class="resumo">
+            <div class="card">
+                <span id="totalDias">0</span>
+                <p>Dias registrados</p>
+            </div>
+
+            <div class="card presente">
+                <span id="totalPresencas">0</span>
+                <p>Presenças</p>
+            </div>
+
+            <div class="card falta">
+                <span id="totalFaltas">0</span>
+                <p>Faltas</p>
+            </div>
+
+            <div class="card">
+                <span id="frequencia">0%</span>
+                <p>Frequência</p>
+            </div>
+        </div>
+
+        <div id="mensagem"></div>
+
+        <div class="lista">
+            <h2>Dias letivos</h2>
+            <div id="dias"></div>
+        </div>
+
+        <a href="inicio.html" class="voltar">← Voltar para o início</a>
+
+    </div>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #1e3a8a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 30px 15px;
+        }
+
+        .container {
+            background: white;
+            width: 700px;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .topo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .topo h1 {
+            color: #1e3a8a;
+            font-size: 30px;
+        }
+
+        .topo p {
+            color: #666;
+            margin-top: 7px;
+        }
+
+        .resumo {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: #f1f5f9;
+            padding: 15px 8px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .card span {
+            display: block;
+            color: #1e3a8a;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .card p {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .card.presente span {
+            color: #15803d;
+        }
+
+        .card.falta span {
+            color: #dc2626;
+        }
+
+        .lista {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .lista h2 {
+            padding: 15px;
+            background: #f1f5f9;
+            color: #333;
+            font-size: 20px;
+        }
+
+        #dias {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .dia {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            border-top: 1px solid #eee;
+        }
+
+        .data {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .data strong {
+            color: #333;
+            font-size: 15px;
+        }
+
+        .data span {
+            color: #777;
+            font-size: 13px;
+            margin-top: 3px;
+        }
+
+        .botoes {
+            display: flex;
+            gap: 8px;
+        }
+
+        .botao {
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .botao.presente {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .botao.presente.ativo {
+            background: #15803d;
+            color: white;
+        }
+
+        .botao.falta {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .botao.falta.ativo {
+            background: #dc2626;
+            color: white;
+        }
+
+        .botao:hover {
+            opacity: 0.85;
+        }
+
+        #mensagem {
+            display: none;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 7px;
+            background: #e5ffe9;
+            color: #08752c;
+            border: 1px solid #9ee6ae;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .voltar {
+            display: block;
+            margin-top: 25px;
+            text-align: center;
+            color: #1e3a8a;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .voltar:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            .resumo {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dia {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .botoes {
+                width: 100%;
+            }
+
+            .botao {
+                flex: 1;
+            }
+        }
+    </style>
+
+    <script>
+        const ANO = 2026;
+
+        const feriados = [
+            "2026-01-01",
+            "2026-04-03",
+            "2026-04-21",
+            "2026-05-01",
+            "2026-09-07",
+            "2026-10-12",
+            "2026-11-02",
+            "2026-11-15",
+            "2026-11-20",
+            "2026-12-25"
+        ];
+
+        const listaDias = document.getElementById("dias");
+        const totalDias = document.getElementById("totalDias");
+        const totalPresencas = document.getElementById("totalPresencas");
+        const totalFaltas = document.getElementById("totalFaltas");
+        const frequencia = document.getElementById("frequencia");
+        const mensagem = document.getElementById("mensagem");
+
+        let presencas = JSON.parse(
+            localStorage.getItem("presencas2026")
+        ) || {};
+
+        function formatarData(data) {
+            return data.toLocaleDateString("pt-BR", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            });
+        }
+
+        function nomeDiaSemana(data) {
+            const dias = [
+                "Domingo",
+                "Segunda-feira",
+                "Terça-feira",
+                "Quarta-feira",
+                "Quinta-feira",
+                "Sexta-feira",
+                "Sábado"
+            ];
+
+            return dias[data.getDay()];
+        }
+
+        function dataParaChave(data) {
+            const ano = data.getFullYear();
+            const mes = String(data.getMonth() + 1).padStart(2, "0");
+            const dia = String(data.getDate()).padStart(2, "0");
+
+            return `${ano}-${mes}-${dia}`;
+        }
+
+        function ehFeriado(data) {
+            return feriados.includes(dataParaChave(data));
+        }
+
+        function ehDiaLetivo(data) {
+            const diaSemana = data.getDay();
+
+            if (diaSemana === 0 || diaSemana === 6) {
+                return false;
+            }
+
+            if (ehFeriado(data)) {
+                return false;
+            }
+
+            return true;
+        }
+
+        function criarDias() {
+            listaDias.innerHTML = "";
+
+            const inicio = new Date(ANO, 0, 1);
+            const fim = new Date(ANO, 11, 31);
+            let dataAtual = new Date(inicio);
+
+            while (dataAtual <= fim) {
+                if (ehDiaLetivo(dataAtual)) {
+                    criarDia(dataAtual);
+                }
+
+                dataAtual.setDate(dataAtual.getDate() + 1);
+            }
+
+            atualizarResumo();
+        }
+
+        function criarDia(data) {
+            const chave = dataParaChave(data);
+
+            const div = document.createElement("div");
+            div.className = "dia";
+
+            const dados = document.createElement("div");
+            dados.className = "data";
+
+            const dataTexto = document.createElement("strong");
+            dataTexto.textContent = formatarData(data);
+
+            const diaSemana = document.createElement("span");
+            diaSemana.textContent = nomeDiaSemana(data);
+
+            dados.appendChild(dataTexto);
+            dados.appendChild(diaSemana);
+
+            const botoes = document.createElement("div");
+            botoes.className = "botoes";
+
+            const botaoPresente = document.createElement("button");
+            botaoPresente.className = "botao presente";
+            botaoPresente.textContent = "✓ Presente";
+
+            const botaoFalta = document.createElement("button");
+            botaoFalta.className = "botao falta";
+            botaoFalta.textContent = "✕ Falta";
+
+            if (presencas[chave] === "presente") {
+                botaoPresente.classList.add("ativo");
+            }
+
+            if (presencas[chave] === "falta") {
+                botaoFalta.classList.add("ativo");
+            }
+
+            botaoPresente.addEventListener("click", function() {
+                presencas[chave] = "presente";
+                salvarPresencas();
+
+                botaoPresente.classList.add("ativo");
+                botaoFalta.classList.remove("ativo");
+
+                atualizarResumo();
+                mostrarMensagem("Presença registrada com sucesso!");
+            });
+
+            botaoFalta.addEventListener("click", function() {
+                presencas[chave] = "falta";
+                salvarPresencas();
+
+                botaoFalta.classList.add("ativo");
+                botaoPresente.classList.remove("ativo");
+
+                atualizarResumo();
+                mostrarMensagem("Falta registrada.");
+            });
+
+            botoes.appendChild(botaoPresente);
+            botoes.appendChild(botaoFalta);
+
+            div.appendChild(dados);
+            div.appendChild(botoes);
+
+            listaDias.appendChild(div);
+        }
+
+        function salvarPresencas() {
+            localStorage.setItem(
+                "presencas2026",
+                JSON.stringify(presencas)
+            );
+        }
+
+        function atualizarResumo() {
+            const dias = document.querySelectorAll(".dia");
+
+            let diasRegistrados = 0;
+            let presencasTotal = 0;
+            let faltasTotal = 0;
+
+            dias.forEach(function(dia) {
+                const presente = dia.querySelector(".botao.presente");
+                const falta = dia.querySelector(".botao.falta");
+
+                if (
+                    presente.classList.contains("ativo") ||
+                    falta.classList.contains("ativo")
+                ) {
+                    diasRegistrados++;
+                }
+
+                if (presente.classList.contains("ativo")) {
+                    presencasTotal++;
+                }
+
+                if (falta.classList.contains("ativo")) {
+                    faltasTotal++;
+                }
+            });
+
+            let percentual = 0;
+
+            if (diasRegistrados > 0) {
+                percentual = (presencasTotal / diasRegistrados) * 100;
+            }
+
+            totalDias.textContent = diasRegistrados;
+            totalPresencas.textContent = presencasTotal;
+            totalFaltas.textContent = faltasTotal;
+            frequencia.textContent = percentual.toFixed(1) + "%";
+        }
+
+        function mostrarMensagem(texto) {
+            mensagem.textContent = texto;
+            mensagem.style.display = "block";
+
+            setTimeout(function() {
+                mensagem.style.display = "none";
+            }, 2000);
+        }
+
+        criarDias();
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Escolar - Início</title>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <span>SISTEMA ESCOLAR</span>
+                <h1>Olá, estudante</h1>
+                <p>
+                    O que você deseja acessar?
+                </p>
+            </div>
+            <button class="sair" onclick="sair()">
+                Sair
+            </button>
+        </header>
+        <main>
+
+            <h2>Menu</h2>
+
+            <div class="menu">
+
+                <a href="notas.html" class="card">
+
+                    <div class="texto">
+
+                        <h3>Minhas Notas</h3>
+
+                        <p>
+                            Consulte suas notas e veja
+                            sua média escolar.
+                        </p>
+
+                    </div>
+                </a>
+
+                <a href="presenca.html" class="card">
+
+                    <div class="texto">
+
+                        <h3>Minha Presença</h3>
+
+                        <p>
+                            Consulte e registre sua
+                            presença nos dias letivos.
+                        </p>
+
+                    </div>
+                </a>
+
+                <a href="atividades.html" class="card">
+
+                    <div class="texto">
+
+                        <h3>Minhas Atividades</h3>
+
+                        <p>
+                            Veja suas tarefas e marque
+                            as atividades concluídas.
+                        </p>
+
+                    </div>
+                </a>
+
+
+            </div>
+
+        </main>
+
+        <footer>
+            Sistema Escolar © 2026
+        </footer>
+
+    </div>
+
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #eef2ff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            width: 800px;
+            max-width: 100%;
+        }
+
+        header {
+            background: #1e3a8a;
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+
+        header span {
+            font-size: 11px;
+            letter-spacing: 2px;
+            opacity: 0.75;
+        }
+
+
+        header h1 {
+            font-size: 30px;
+            margin-top: 8px;
+            margin-bottom: 7px;
+        }
+
+        header p {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        .sair {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 9px 16px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+
+        .sair:hover {
+            background: white;
+            color: #1e3a8a;
+        }
+
+        main h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .menu {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 15px;
+        }
+
+        .card {
+            background: white;
+            min-height: 125px;
+            padding: 22px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            text-decoration: none;
+            border: 1px solid #e5e7eb;
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+            border-color: #1e3a8a;
+        }
+
+        .texto h3 {
+            color: #222;
+            font-size: 19px;
+            margin-bottom: 7px;
+        }
+
+        .texto p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .seta {
+            color: #1e3a8a;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            color: #888;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+    </style>
+
+    <script>
+
+        const usuarioLogado =
+            localStorage.getItem("usuarioLogado");
+
+
+        if (!usuarioLogado) {
+
+            window.location.href = "login.html";
+
+        }
+
+        if (usuarioLogado) {
+
+            const usuario =
+                JSON.parse(usuarioLogado);
+
+            const titulo =
+                document.querySelector("header h1");
+
+        }
+
+        function sair() {
+
+            localStorage.removeItem(
+                "usuarioLogado"
+            );
+
+            window.location.href =
+                "login.html";
+
+        }
+
+    </script>
+
+</body>
+
+</html>
